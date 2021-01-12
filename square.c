@@ -131,6 +131,10 @@ enum {ms_init,ms_fwd,ms_turn,ms_end};
 
 int main()
 {
+
+  printf("hey\n");
+  while(1);
+
   int running,n=0,arg,time=0;
   double dist=0,angle=0;
 
