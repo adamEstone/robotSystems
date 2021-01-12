@@ -21,11 +21,6 @@
 #include "rhd.h"
 #include "componentserver.h"
 #include "xmlio.h"
-//test commit
-char *Adam;
-char *jakob;
-
-int hejsa2;
 
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
