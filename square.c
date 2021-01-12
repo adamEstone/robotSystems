@@ -25,7 +25,7 @@
 char *Adam;
 char *jakob;
 
-int hejsa;
+int hej;
 
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
