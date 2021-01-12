@@ -22,6 +22,8 @@
 #include "componentserver.h"
 #include "xmlio.h"
 
+char *Adam;
+
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
 struct {
