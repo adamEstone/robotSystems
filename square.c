@@ -21,7 +21,7 @@
 #include "rhd.h"
 #include "componentserver.h"
 #include "xmlio.h"
-
+//test commit
 char *Adam;
 char *jakob;
 
