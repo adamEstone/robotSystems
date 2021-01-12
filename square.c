@@ -154,6 +154,8 @@ enum
   ms_fwd,
   ms_turn,
   ms_direction,
+  ms_followlineLeft,//
+  ms_followlineRight,//
   ms_end
 };
 
@@ -291,15 +293,24 @@ int main()
     odo.right_enc = renc->data[0];
     update_odo(&odo);
 
-    /****************************************
-/ mission statemachine   
-*/
+/****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************
+****************************************/
+// mission statemachine   
     sm_update(&mission);
     switch (mission.state)
     {
     case ms_init:
       n = 4;
-      dist = 2;
+      dist = 5;//2
       angleDeg = 0;
       angle = angleDeg / 180 * M_PI;
       targetVelo = 0.2;
@@ -354,7 +365,13 @@ int main()
           mission.state = ms_fwd;
       }
       break;
+      case ms_followlineRight:
 
+      break;
+
+      case ms_followlineLeft:
+
+      break;
     case ms_direction:
 
       if (targetVelo - currVelo > acc * sampletime)
@@ -371,24 +388,28 @@ int main()
         currVelo = maxVelo;
 
       printf("sensor l: %i sensor r: %i\n", findSensorLeft(linesensor->data, 0, 7), findSensorRight(linesensor->data, 0, 7));
+      //angleDeg = (double)getSensorAngleRight(findSensorRight(linesensor->data, 0, 7));
+      angleDeg = (double)getSensorAngleLeft(findSensorLeft(linesensor->data, 0, 7));
+      //angleDeg = centerOfMass(5,linesensor->data);
+      printf("Deg %f %f\n", (double)getSensorAngleRight(findSensorRight(linesensor->data, 0, 7)), angleDeg);
 
-      //angleDeg = (double)getSensorAngleLeft(findSensorLeft(linesensor->data, 0, 7));
-      angleDeg = centerOfMass(5,linesensor->data);
-      printf("Deg %f %f\n", (double)getSensorAngleLeft(findSensorRight(linesensor->data, 0, 7)), angleDeg);
-
-      odoRef = odo.theta - (angleDeg * M_PI / 180);
+      odoRef = odo.theta - (angleDeg * M_PI / 180);//??
 
       printf("odoRef %f\n", odoRef);
 
-
+      for (int i = 0; i < 8; i++){
+        printf("[%d]",lineSensorCali(linesensor->data[i]));
+      }
+      printf("\n");
+/*
       if (odo.theta < 0 && odoRef > 0)
-        deltaV = currVelo * (odoRef - odo.theta - (2 * M_PI));
+        deltaV = 0.5 * (odoRef - odo.theta - (2 * M_PI));
       else if (odo.theta > 0 && odoRef < 0)
-        deltaV = currVelo * (odoRef - odo.theta + (2 * M_PI));
-      else
-        deltaV = currVelo * (odoRef - odo.theta);
-
-      printf("speed: %f\n", deltaV);
+        deltaV = 0.5 * (odoRef - odo.theta + (2 * M_PI));
+      else*/
+        deltaV = 0.6 * (odoRef - odo.theta);
+        //deltaV = currVelo * (odoRef - odo.theta);
+      printf("speed: %f \tCurrVelo: %f \n", deltaV,currVelo);
 
       if (direction(deltaV, currVelo, dist, mission.time))
       {
