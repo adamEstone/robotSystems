@@ -23,6 +23,7 @@
 #include "xmlio.h"
 
 char *Adam;
+char *jakob;
 
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
