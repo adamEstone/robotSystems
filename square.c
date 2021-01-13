@@ -23,6 +23,8 @@
 #include "componentserver.h"
 #include "xmlio.h"
 
+#include "sensors.h"
+
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
 struct
@@ -167,6 +169,8 @@ int main()
   int running, n = 0, arg, time = 0;
   double dist = 0.0, angle = 0.0, angleDeg = 0.0, acc = 0.0, deltaV = 0.0, odoRef = 0.0;
   double targetVelo = 0.0, currVelo = 0.0, maxVelo = 0.0, wheelDist = 0.0;
+
+  int oldLinesensorData[] = {128, 128, 128, 128, 128, 128, 128, 128};
 
   /* Establish connection to robot sensors and actuators.
    */
@@ -316,7 +320,7 @@ int main()
       targetVelo = 0.2;
       acc = 0.5;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
-      mission.state = ms_direction;
+      mission.state = ms_fwd;
       break;
 
     case ms_fwd:
@@ -334,6 +338,12 @@ int main()
       if (maxVelo < currVelo)
       {
         currVelo = maxVelo;
+      }
+
+      if (crossingBlackLine(linesensor->data, oldLinesensorData, 0, 7)){
+
+        mission.state = ms_end;
+
       }
 
       //printf("%f\n", currVelo);

@@ -5,3 +5,5 @@ square
 square.o
 ulmsserver.cmd
 ulmsserver.ini
+laser_log.txt
+odometry_log.txt
