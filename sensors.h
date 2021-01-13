@@ -56,3 +56,10 @@ if (laserpar[irSensor] < dist){
 return 0;
 
 }
+
+
+double measureIRDist(double laserpar[10], int irSensor) {
+
+return laserpar[irdist];
+
+}
