@@ -36,8 +36,8 @@ enum
 
 
 int laserTrigger(double laserpar[10], double dist, int irSensor) {
-
-/*printf("dist: %f, linesensor: %f\n",dist, laserpar[irSensor]);
+/*
+printf("dist: %f, linesensor: %f\n",dist, laserpar[irSensor]);
 
 for (int i = 0; i < 9; i++)
 {

@@ -312,21 +312,21 @@ int main()
     switch (mission.state)
     {
     case ms_init:
-      exitCondition = exit_irDistMiddel;
-      dist = 0.2; //2
+      exitCondition = exit_irDistLeft;
+      dist = 0.4; //2
       angleDeg = 0;
       angle = angleDeg / 180 * M_PI;
       targetVelo = 0.2;
       acc = 1;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
-      mission.state = ms_direction;
+      mission.state = ms_fwd;
       break;
 
     case ms_fwd:
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
       if (fwd(dist, currVelo, mission.time))
-        mission.state = ms_end;
+        mission.state = ms_direction;
       break;
 
     case ms_turn:
@@ -370,6 +370,7 @@ int main()
       break;
 
     case ms_direction:
+      dist = 0.4;
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
       odoRef = angleDeg * M_PI / 180; // VARIABEL TIL VINKEL SOM SKAL DREJES MED
