@@ -1,6 +1,6 @@
 /*
  * An example SMR program.
- *
+ * 
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +30,8 @@ struct
 } gmk;
 double visionpar[10];
 double laserpar[10];
+
+int test;
 
 void serverconnect(componentservertype *s);
 void xml_proc(struct xml_in *x);
