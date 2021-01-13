@@ -312,14 +312,14 @@ int main()
     switch (mission.state)
     {
     case ms_init:
-      exitCondition = exit_crossBlackLine;
-      dist = 4; //2
-      angleDeg = 45;
+      exitCondition = exit_irDistMiddel;
+      dist = 0.2; //2
+      angleDeg = 0;
       angle = angleDeg / 180 * M_PI;
       targetVelo = 0.2;
       acc = 1;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
-      mission.state = ms_followlineRight;
+      mission.state = ms_direction;
       break;
 
     case ms_fwd:
@@ -580,7 +580,7 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
     break;
 
   case mot_direction:
-    
+
     switch (exitC)
     {
     case exit_dist:
@@ -594,12 +594,20 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       break;
 
     case exit_irDistLeft:
+      if laserTrigger (laserpar, p->dist, irSensorLeft))
+        temp = 1;
       break;
+
     case exit_irDistMiddel:
+      if laserTrigger (laserpar, p->dist, irSensorMiddle))
+        temp = 1;
       break;
+
     case exit_irDistRight:
+      if laserTrigger (laserpar, p->dist, irSensorRight))
+        temp = 1;
       break;
-    
+
     default:
       printf("Unknown Exit Condition\n");
       break;
