@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int crossingBlackLine(int32_t *sensors, int oldLinesensorData[], int min, int max)
+int crossingBlackLine(int32_t *sensors, int oldLinesensorData[])
 {
   int lineCrossed = 1;
 
-  for (size_t i = min; i < max; i++)
+  for (size_t i = 0; i < 7; i++)
   {
 
     //printf("%i, ", sensors[i]);
