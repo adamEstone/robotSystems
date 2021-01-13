@@ -594,17 +594,17 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       break;
 
     case exit_irDistLeft:
-      if laserTrigger (laserpar, p->dist, irSensorLeft))
+      if (laserTrigger (laserpar, p->dist, irSensorLeft))
         temp = 1;
       break;
 
     case exit_irDistMiddel:
-      if laserTrigger (laserpar, p->dist, irSensorMiddle))
+      if (laserTrigger (laserpar, p->dist, irSensorMiddle))
         temp = 1;
       break;
 
     case exit_irDistRight:
-      if laserTrigger (laserpar, p->dist, irSensorRight))
+      if (laserTrigger (laserpar, p->dist, irSensorRight))
         temp = 1;
       break;
 

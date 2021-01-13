@@ -3,8 +3,7 @@
 
 int crossingBlackLine(int32_t *sensors)
 {
-  int lineCrossed = 1;
-
+  int temp = 1;
   for (size_t i = 1; i < 6; i++)
   {
     // printf("%i, ", sensors[i]);
@@ -60,6 +59,6 @@ return 0;
 
 double measureIRDist(double laserpar[10], int irSensor) {
 
-return laserpar[irdist];
+return laserpar[irSensor];
 
 }
