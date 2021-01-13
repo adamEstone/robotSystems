@@ -586,17 +586,12 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
     case exit_dist:
       if ((p->right_pos + p->left_pos) / 2 - p->startpos > p->dist)
         temp = 1;
-      else
-        temp = 0;
       break;
 
     case exit_crossBlackLine:
-      if (crossingBlackLine(linesensor->data)){
-        printf("test2\n");
+      if (crossingBlackLine(linesensor->data))
         temp = 1;
-      }else{
-        temp = 0;
-      }break;
+      break;
 
     case exit_irDistLeft:
       break;
