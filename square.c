@@ -311,12 +311,12 @@ int main()
     case ms_init:
       n = 4;
       dist = 4; //2
-      angleDeg = 0;
+      angleDeg = 45;
       angle = angleDeg / 180 * M_PI;
       targetVelo = 0.2;
       acc = 0.5;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
-      mission.state = ms_followlineLeft;
+      mission.state = ms_direction;
       break;
 
     case ms_fwd:
@@ -463,29 +463,18 @@ int main()
       if (maxVelo < currVelo)
         currVelo = maxVelo;
 
-      printf("sensor l: %i sensor r: %i\n", findSensorLeft(linesensor->data, 0, 7), findSensorRight(linesensor->data, 0, 7));
-      //angleDeg = (double)getSensorAngleRight(findSensorRight(linesensor->data, 0, 7));
-      angleDeg = (double)getSensorAngleLeft(findSensorLeft(linesensor->data, 0, 7));
-      //angleDeg = centerOfMass(5,linesensor->data);
-      printf("Deg %f %f\n", (double)getSensorAngleRight(findSensorRight(linesensor->data, 0, 7)), angleDeg);
-
-      odoRef = odo.theta - (angleDeg * M_PI / 180); //??
+      // odoRef = odo.theta - (angleDeg * M_PI / 180); GAMMEL FEJL TIL FOLLOWLINE
+      odoRef = -270 * M_PI / 180; // VARIABEL TIL VINKEL SOM SKAL DREJES MED
 
       printf("odoRef %f\n", odoRef);
 
-      for (int i = 0; i < 8; i++)
-      {
-        printf("[%d]", lineSensorCali(linesensor->data[i]));
-      }
-      printf("\n");
-      
       if (odo.theta < 0 && odoRef > 0)
         deltaV = currVelo * (odoRef - odo.theta - (2 * M_PI));
       else if (odo.theta > 0 && odoRef < 0)
         deltaV = currVelo * (odoRef - odo.theta + (2 * M_PI));
       else
-      deltaV = currVelo * (odoRef - odo.theta);
-      
+        deltaV = currVelo * (odoRef - odo.theta);
+
       printf("speed: %f \tCurrVelo: %f \n", deltaV, currVelo);
 
       if (direction(deltaV, currVelo, dist, mission.time))
