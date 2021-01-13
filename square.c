@@ -1,3 +1,4 @@
+// DET VIRKER
 /*
  * An example SMR program.
  *
@@ -21,6 +22,8 @@
 #include "rhd.h"
 #include "componentserver.h"
 #include "xmlio.h"
+
+int test;
 
 struct xml_in *xmldata;
 struct xml_in *xmllaser;
