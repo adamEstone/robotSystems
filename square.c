@@ -1,3 +1,4 @@
+// DET VIRKER
 /*
  * An example SMR program.
  * 
