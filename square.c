@@ -1,4 +1,4 @@
-// DET VIRKER!!
+// DET VIRKER
 /*
  * An example SMR program.
  * 
