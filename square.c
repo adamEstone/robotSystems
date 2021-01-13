@@ -340,11 +340,13 @@ int main()
         currVelo = maxVelo;
       }
 
+      /* CrossingBlackLineTest
       if (crossingBlackLine(linesensor->data, oldLinesensorData, 0, 7)){
 
         mission.state = ms_end;
 
       }
+      */
 
       //printf("%f\n", currVelo);
       if (fwd(dist, currVelo, mission.time))
