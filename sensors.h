@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int crossingBlackLine(int32_t *sensors, int oldLinesensorData[], int min, int max)
+int crossingBlackLine(int32_t *sensors)
 {
   int temp = 1;
 
-  for (size_t i = min; i < max; i++)
+  for (size_t i = 1; i < 6; i++)
   {
-
-    //printf("%i, ", sensors[i]);
-
-    if (oldLinesensorData[i] != 0 || sensors[i] != 128)
-    {
+    printf("%i, ", sensors[i]);
+    if (sensors[i] != 0)
       temp = 0;
-    }
-
-    oldLinesensorData[i] = sensors[i];
   }
 
-  //printf("\n");
+  printf("\n");
 
   if (temp == 1)
   {
