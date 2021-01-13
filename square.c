@@ -936,4 +936,3 @@ float centerOfMass(int distanceBetweenSensors, int *sensors)
   return (center - (sensorSumTimesXi / sensorSum)) * distanceBetweenSensors;
 }
 
-char *shit;
