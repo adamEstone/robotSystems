@@ -8,3 +8,5 @@ ulmsserver.ini
 laser_log.txt
 odometry_log.txt
 run.sh
+laser_log.dat
+log_ulmsserver/.PATH.TEST
