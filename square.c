@@ -32,8 +32,6 @@ struct
 double visionpar[10];
 double laserpar[10];
 
-int test;
-
 void serverconnect(componentservertype *s);
 void xml_proc(struct xml_in *x);
 void xml_proca(struct xml_in *x);
