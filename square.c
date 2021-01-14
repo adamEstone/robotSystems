@@ -331,7 +331,8 @@ int main()
       switch (stateCounter)
       {
       case 1: // followline "br" @v0.2 :($crossingblackline > 0)
-        printf("case 1\n");
+      case 9: // followline "bm" @v0.2 :($crossingblackline > 0)
+        printf("case 1, 9\n");
         exitCondition = exit_crossBlackLine;
         mission.state = ms_followlineRight;
 
@@ -356,26 +357,32 @@ int main()
         mission.state = ms_fwd;
         break;
 
-      
       case 5: // drive @v0.2 :($drivendist > 0.2)
-        printf("case 5\n");
+      case 10:
+        printf("case 5, 10\n");
         dist = 0.2;
         exitCondition = exit_dist;
         mission.state = ms_fwd;
         break;
 
-      case 7:
+      case 7: // drive @v0.2 :($drivendist > 0.1)
         printf("case 7\n");
         dist = 0.1;
         exitCondition = exit_dist;
         mission.state = ms_fwd;
         break;
-      
 
       case 8: // turn -90 @v0.2
         printf("case 8\n");
         angle = calcAngle(-90);
         mission.state = ms_turn;
+        break;
+
+      case 11: // fwd -1 @v0.2
+        printf("case 11\n");
+        dist = -1;
+        exitCondition = exit_dist;
+        mission.state = ms_fwd;
         break;
 
       default:
@@ -617,7 +624,9 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
     switch (exitC)
     {
     case exit_dist:
-      if ((p->right_pos + p->left_pos) / 2 - p->startpos > p->dist)
+      if ((p->dist > 0) && ((p->right_pos + p->left_pos) / 2 - p->startpos > p->dist))
+        temp = 1;
+      else if ((p->dist < 0) && ((((p->right_pos + p->left_pos) / 2 - p->startpos) * -1) > fabs(p->dist)))
         temp = 1;
       break;
 
@@ -652,11 +661,17 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       p->motorspeed_l = 0;
       p->motorspeed_r = 0;
     }
-    else
+    else if (p->dist > 0)
     {
       p->motorspeed_l = p->speedcmd;
       p->motorspeed_r = p->speedcmd;
     }
+    else
+    {
+      p->motorspeed_l = -p->speedcmd;
+      p->motorspeed_r = -p->speedcmd;
+    }
+
     break;
 
   case mot_turn:
