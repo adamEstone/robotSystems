@@ -11,7 +11,7 @@ int crossingBlackLine(int32_t *sensors)
       temp = 0;
   }
 
-  printf("\n");
+  //printf("\n");
 
   if (temp == 1)
   {

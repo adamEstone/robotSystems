@@ -148,6 +148,7 @@ int findSensorLeft(int32_t *sensors);
 int getSensorAngleRight(int sensor);
 int getSensorAngleLeft(int sensor);
 double calcVelocity(double targetVelo, double currVelo, double acc, double dist);
+double calcAngle(double angleDeg);
 
 float centerOfMass(int distanceBetweenSensors, int *sensors);
 
@@ -163,24 +164,24 @@ motiontype mot;
 enum
 {
   ms_init,
+  ms_nextState,
   ms_fwd,
   ms_turn,
   ms_direction,
   ms_followlineLeft,
   ms_followlineRight,
-  ms_end
+  ms_end,
+  ms_calcDistance
 };
 
 int main()
 {
   double odometryLog[100000];
   double laserLog[10][1000];
-  int odometryCounter = 0, laserCounter = 0;
+  int odometryCounter = 0, laserCounter = 0, stateCounter = 0;
   int running, arg, time = 0, exitCondition = 0;
   double dist = 0.0, angle = 0.0, angleDeg = 0.0, acc = 0.0, deltaV = 0.0, odoRef = 0.0;
   double targetVelo = 0.0, currVelo = 0.0, maxVelo = 0.0, wheelDist = 0.0;
-
-  //int oldLinesensorData[] = {128, 128, 128, 128, 128, 128, 128, 128};
 
   /* Establish connection to robot sensors and actuators.
    */
@@ -312,24 +313,88 @@ int main()
     switch (mission.state)
     {
     case ms_init:
+      /*
       exitCondition = exit_irDistLeft;
-      dist = 0.4; //2
       angleDeg = 0;
       angle = angleDeg / 180 * M_PI;
+      */
+      dist = 1;
+      stateCounter = 0;
       targetVelo = 0.2;
       acc = 1;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
-      mission.state = ms_fwd;
+      mission.state = ms_nextState;
+      break;
+
+    case ms_nextState:
+      stateCounter++;
+      switch (stateCounter)
+      {
+      case 1: // followline "br" @v0.2 :($crossingblackline > 0)
+        printf("case 1\n");
+        exitCondition = exit_crossBlackLine;
+        mission.state = ms_followlineRight;
+
+        break;
+
+      case 2:
+        printf("case 2\n");
+        mission.state = ms_calcDistance;
+        break;
+
+      case 3: // turn 90 @v0.2
+        printf("case 3\n");
+        angle = calcAngle(90);
+        mission.state = ms_turn;
+        break;
+
+      case 4: // drive @v0.2 :($crossingblackline > 0)
+      case 6:
+        printf("case 4, 6\n");
+        dist = 1;
+        exitCondition = exit_crossBlackLine;
+        mission.state = ms_fwd;
+        break;
+
+      
+      case 5: // drive @v0.2 :($drivendist > 0.2)
+        printf("case 5\n");
+        dist = 0.2;
+        exitCondition = exit_dist;
+        mission.state = ms_fwd;
+        break;
+
+      case 7:
+        printf("case 7\n");
+        dist = 0.1;
+        exitCondition = exit_dist;
+        mission.state = ms_fwd;
+        break;
+      
+
+      case 8: // turn -90 @v0.2
+        printf("case 8\n");
+        angle = calcAngle(-90);
+        mission.state = ms_turn;
+        break;
+
+      default:
+        printf("Unknown stateCount\n");
+        mission.state = ms_end;
+        break;
+      }
       break;
 
     case ms_fwd:
+      printf("fwd\n");
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
       if (fwd(dist, currVelo, mission.time))
-        mission.state = ms_direction;
+        mission.state = ms_nextState;
       break;
 
     case ms_turn:
+      printf("turn\n");
       if (targetVelo - currVelo > acc * sampletime)
         currVelo += acc * sampletime;
       else
@@ -340,36 +405,39 @@ int main()
         currVelo = maxVelo;
 
       if (turn(angle, currVelo, mission.time))
-        mission.state = ms_end;
+        mission.state = ms_nextState;
 
       break;
 
     case ms_followlineLeft:
+      printf("followlineleft\n");
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
       angleDeg = (double)getSensorAngleLeft(findSensorLeft(linesensor->data));
 
       odoRef = odo.theta - (angleDeg * M_PI / 180);
-      deltaV = currVelo * (odoRef - odo.theta);
+      deltaV = 0.6 * (odoRef - odo.theta);
 
       if (direction(deltaV, currVelo, dist, mission.time))
-        mission.state = ms_end;
+        mission.state = ms_nextState;
 
       break;
 
     case ms_followlineRight:
+      printf("followlineright\n");
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
       angleDeg = (double)getSensorAngleRight(findSensorRight(linesensor->data));
 
       odoRef = odo.theta - (angleDeg * M_PI / 180);
-      deltaV = currVelo * (odoRef - odo.theta);
+      deltaV = 0.6 * (odoRef - odo.theta);
       if (direction(deltaV, currVelo, dist, mission.time))
-        mission.state = ms_end;
+        mission.state = ms_nextState;
 
       break;
 
     case ms_direction:
+      printf("direction\n");
       dist = 0.4;
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
@@ -383,8 +451,16 @@ int main()
         deltaV = currVelo * (odoRef - odo.theta);
 
       if (direction(deltaV, currVelo, dist, mission.time))
-        mission.state = ms_end;
+        mission.state = ms_nextState;
 
+      break;
+
+    case ms_calcDistance:
+      printf("ms_calcDistance\n");
+      printf("irDist %f«n", measureIRDist(laserpar, irSensorMiddle));
+      printf("odoy %f\n", odo.y);
+      printf("Distance from start to box: %f\n", measureIRDist(laserpar, irSensorMiddle) + (odo.y * -1) + 0.26);
+      mission.state = ms_nextState;
       break;
 
     case ms_end:
@@ -448,8 +524,8 @@ void reset_odo(odotype *p)
   p->right_enc_old = p->right_enc;
   p->left_enc_old = p->left_enc;
 
-  p->x_old = 0.5;
-  p->y_old = 2.0;
+  p->x_old = 0.0;
+  p->y_old = 0.0;
   p->theta_old = 0.0;
 }
 
@@ -536,8 +612,41 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
     p->motorspeed_l = 0;
     p->motorspeed_r = 0;
     break;
+
   case mot_move:
-    if ((p->right_pos + p->left_pos) / 2 - p->startpos > p->dist)
+    switch (exitC)
+    {
+    case exit_dist:
+      if ((p->right_pos + p->left_pos) / 2 - p->startpos > p->dist)
+        temp = 1;
+      break;
+
+    case exit_crossBlackLine:
+      if (crossingBlackLine(linesensor->data))
+        temp = 1;
+      break;
+
+    case exit_irDistLeft:
+      if (laserTrigger(laserpar, p->dist, irSensorLeft))
+        temp = 1;
+      break;
+
+    case exit_irDistMiddel:
+      if (laserTrigger(laserpar, p->dist, irSensorMiddle))
+        temp = 1;
+      break;
+
+    case exit_irDistRight:
+      if (laserTrigger(laserpar, p->dist, irSensorRight))
+        temp = 1;
+      break;
+
+    default:
+      printf("Unknown Exit Condition\n");
+      break;
+    }
+
+    if (temp)
     {
       p->finished = 1;
       p->motorspeed_l = 0;
@@ -595,17 +704,17 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       break;
 
     case exit_irDistLeft:
-      if (laserTrigger (laserpar, p->dist, irSensorLeft))
+      if (laserTrigger(laserpar, p->dist, irSensorLeft))
         temp = 1;
       break;
 
     case exit_irDistMiddel:
-      if (laserTrigger (laserpar, p->dist, irSensorMiddle))
+      if (laserTrigger(laserpar, p->dist, irSensorMiddle))
         temp = 1;
       break;
 
     case exit_irDistRight:
-      if (laserTrigger (laserpar, p->dist, irSensorRight))
+      if (laserTrigger(laserpar, p->dist, irSensorRight))
         temp = 1;
       break;
 
@@ -880,4 +989,9 @@ double calcVelocity(double targetVelo, double currVelo, double acc, double dist)
   }
 
   return currVelo;
+}
+
+double calcAngle(double angleDeg)
+{
+  return angleDeg / 180 * M_PI;
 }
