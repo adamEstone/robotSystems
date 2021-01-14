@@ -171,7 +171,9 @@ enum
   ms_followlineLeft,
   ms_followlineRight,
   ms_end,
-  ms_calcDistance
+  ms_calcDistance,
+  ms_readGotlBot,
+  ms_readGotlTop
 };
 
 int main()
@@ -180,7 +182,7 @@ int main()
   double laserLog[10][1000];
   int odometryCounter = 0, laserCounter = 0, stateCounter = 0;
   int running, arg, time = 0, exitCondition = 0;
-  double dist = 0.0, angle = 0.0, angleDeg = 0.0, acc = 0.0, deltaV = 0.0, odoRef = 0.0;
+  double dist = 0.0, angle = 0.0, angleDeg = 0.0, acc = 0.0, deltaV = 0.0, odoRef = 0.0, temp = 0.0, irOffset = 0.0;
   double targetVelo = 0.0, currVelo = 0.0, maxVelo = 0.0, wheelDist = 0.0;
 
   /* Establish connection to robot sensors and actuators.
@@ -313,45 +315,44 @@ int main()
     switch (mission.state)
     {
     case ms_init:
-      /*
-      exitCondition = exit_irDistLeft;
-      angleDeg = 0;
-      angle = angleDeg / 180 * M_PI;
-      */
       dist = 1;
       stateCounter = 0;
       targetVelo = 0.2;
       acc = 1;
+      irOffset = 0.26;
       wheelDist = (M_PI * WHEEL_DIAMETER) * (M_PI * WHEEL_SEPARATION) / (M_PI * WHEEL_DIAMETER) * angleDeg / 360;
       mission.state = ms_nextState;
       break;
 
     case ms_nextState:
       stateCounter++;
+      printf("statecount: %d\n", stateCounter);
+
       switch (stateCounter)
       {
       case 1: // followline "br" @v0.2 :($crossingblackline > 0)
       case 9: // followline "bm" @v0.2 :($crossingblackline > 0)
-        printf("case 1, 9\n");
+      case 16:
+      case 20:
         exitCondition = exit_crossBlackLine;
         mission.state = ms_followlineRight;
-
         break;
 
       case 2:
-        printf("case 2\n");
         mission.state = ms_calcDistance;
         break;
 
       case 3: // turn 90 @v0.2
-        printf("case 3\n");
+      case 15:
+      case 18:
+      case 28:
         angle = calcAngle(90);
         mission.state = ms_turn;
         break;
 
       case 4: // drive @v0.2 :($crossingblackline > 0)
       case 6:
-        printf("case 4, 6\n");
+      case 13:
         dist = 1;
         exitCondition = exit_crossBlackLine;
         mission.state = ms_fwd;
@@ -359,29 +360,56 @@ int main()
 
       case 5: // drive @v0.2 :($drivendist > 0.2)
       case 10:
-        printf("case 5, 10\n");
+      case 14:
+      case 17:
+      case 22:
         dist = 0.2;
         exitCondition = exit_dist;
         mission.state = ms_fwd;
         break;
 
       case 7: // drive @v0.2 :($drivendist > 0.1)
-        printf("case 7\n");
+      case 19:
+      case 21:
+      case 27:
         dist = 0.1;
         exitCondition = exit_dist;
         mission.state = ms_fwd;
         break;
 
       case 8: // turn -90 @v0.2
-        printf("case 8\n");
+      case 12:
         angle = calcAngle(-90);
         mission.state = ms_turn;
         break;
 
       case 11: // fwd -1 @v0.2
-        printf("case 11\n");
         dist = -1;
         exitCondition = exit_dist;
+        mission.state = ms_fwd;
+        break;
+
+      case 23: // followline "bl" @v0.2 :($crossingblackline > 0)
+        exitCondition = exit_crossBlackLine;
+        mission.state = ms_followlineLeft;
+        break;
+
+      case 24: // followline "bm" @v0.2 :($irdistleft < 0.8)
+      case 26:
+        dist = 0.8;
+        exitCondition = exit_irDistLeft;
+        mission.state = ms_followlineRight;
+        break;
+
+      case 25:  // drive @v0.2 :($drivendist > 0.5)
+        dist = 0.5;
+        exitCondition = exit_dist;
+        mission.state = ms_fwd;
+        break;
+
+      case 29:  // drive @v0.2 :($irdistfrontmiddle < 0.2)
+        dist = 0.2;
+        exitCondition = exit_irDistMiddel;
         mission.state = ms_fwd;
         break;
 
@@ -466,7 +494,17 @@ int main()
       printf("ms_calcDistance\n");
       printf("irDist %f«n", measureIRDist(laserpar, irSensorMiddle));
       printf("odoy %f\n", odo.y);
-      printf("Distance from start to box: %f\n", measureIRDist(laserpar, irSensorMiddle) + (odo.y * -1) + 0.26);
+      printf("Distance from start to box: %f\n", measureIRDist(laserpar, irSensorMiddle) + (odo.y * -1) + irOffset);
+      mission.state = ms_nextState;
+      break;
+
+    case ms_readGotlBot:
+      temp = odo.x;
+      mission.state = ms_nextState;
+      break;
+
+    case ms_readGotlTop:
+      temp = odo.x - (odo.x - temp) / 2 + irOffset * 1.5;
       mission.state = ms_nextState;
       break;
 
