@@ -335,6 +335,7 @@ int main()
       switch (stateCounter)
       {
       case 1: // followline "br" @v0.2 :($irdistfrontmiddle < 0.2)
+<<<<<<< HEAD
         mission.state = ms_followBlackLineRight;
         exitCondition = exit_irDistMiddelLess;
         dist = 0.2;
@@ -346,6 +347,17 @@ int main()
         exitCondition = exit_irDistMiddelLess;
         dist = 0.5;
         targetVelo = 0.2;
+=======
+        mission.state = ms_followlineRight;
+        exitCondition = exit_irDistMiddelLess;
+        dist = 0.2;
+        break;
+
+      case 9: // followline "bl" @v0.2 :($irdistfrontmiddle < 0.5)
+        mission.state = ms_followlineLeft;
+        exitCondition = exit_irDistMiddelLess;
+        dist = 0.5;
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       case 10: // followline "bm" @v1.0 :($crossingblackline > 0)
@@ -353,6 +365,7 @@ int main()
       case 20:
       case 22:
       case 31:
+<<<<<<< HEAD
       case 43:
       case 49:
         mission.state = ms_followBlackLineMiddle;
@@ -371,6 +384,16 @@ int main()
         mission.state = ms_followWhiteLineMiddle;
         exitCondition = exit_crossBlackLine;
         targetVelo = 0.2;
+=======
+        mission.state = ms_followlineMiddle;
+        exitCondition = exit_crossBlackLine;
+        break;
+
+      case 23: // followline "bm" @v0.3 :($irdistleft < 0.8)
+        mission.state = ms_followlineMiddle;
+        exitCondition = exit_irDistLeftLess;
+        dist = 0.8;
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       case 2:
@@ -381,6 +404,7 @@ int main()
       case 13:
         mission.state = ms_turn;
         angle = -M_PI - odo.theta;
+<<<<<<< HEAD
         targetVelo = 0.2;
         break;
 
@@ -420,22 +444,44 @@ int main()
         targetVelo = 0.3;
         break;
 
+=======
+        break;
+
+      case 33:
+        mission.state = ms_turn;
+        angle = M_PI - odo.theta;
+        break;
+
+      case 5: // turn -90 @v1.0
+      case 8:
+      case 27:
+        mission.state = ms_turn;
+        angle = calcAngle(-90);
+        break;
+
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
       case 16: // turn 90 @v1.0
       case 19:
       case 25:
       case 30:
       case 37:
+<<<<<<< HEAD
       case 39:
       case 42:
       case 64:
         mission.state = ms_turn;
         angle = calcAngle(90);
         targetVelo = 0.3;
+=======
+        mission.state = ms_turn;
+        angle = calcAngle(90);
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       case 6: // drive @v1.0 :($crossingblackline > 0)
       case 14:
       case 28:
+<<<<<<< HEAD
       case 40:
       case 62:
         mission.state = ms_fwd;
@@ -519,17 +565,67 @@ int main()
         exitCondition = exit_dist;
         dist = 0.6;
         targetVelo = 0.2;
+=======
+        mission.state = ms_fwd;
+        exitCondition = exit_crossBlackLine;
+        dist = 1; // makes robot drive forward
+        break;
+
+      case 26: // drive @v1.0 :($irdistfrontmiddle > 0.2)
+        mission.state = ms_fwd;
+        exitCondition = exit_irDistMiddelLess;
+        dist = 0.2;
+        break;
+
+      case 35: // drive @v0.3 :($irdistleft > 0.8)
+        mission.state = ms_fwd;
+        exitCondition = exit_irDistRightLarger;
+        dist = 0.8;
+        break;
+
+      case 4: // fwd 0.5 @v1.0
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = 0.5;
+        break;
+
+      case 7: // fwd 0.2 @v1.0
+      case 15:
+      case 18:
+      case 21:
+      case 29:
+      case 32:
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = 0.2;
+        break;
+
+      case 11: // fwd 0.3 @v1.0
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = 0.3;
+        break;
+
+      case 12: // fwd -1.3 @v1.0
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = -1.3;
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       case 24: // fwd 0.65 @v1.0
         mission.state = ms_fwd;
         exitCondition = exit_dist;
         dist = 0.65;
+<<<<<<< HEAD
         targetVelo = 0.3;
+=======
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       case 34: // fwd 1 @v1.0
       case 38:
+<<<<<<< HEAD
       case 59:
         mission.state = ms_fwd;
         exitCondition = exit_dist;
@@ -542,6 +638,17 @@ int main()
         exitCondition = exit_dist;
         dist = 1.2;
         targetVelo = 0.3;
+=======
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = 1;
+        break;
+
+      case 36: // fwd 0.45 @v1.0
+        mission.state = ms_fwd;
+        exitCondition = exit_dist;
+        dist = 0.45;
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
         break;
 
       default:
@@ -552,6 +659,7 @@ int main()
       break;
 
     case ms_fwd:
+<<<<<<< HEAD
       //printf("fwd\n");
       currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
 
@@ -668,6 +776,111 @@ int main()
     odometryLog[odometryCounter + 3] = odo.theta;
     odometryCounter += 4;
 
+=======
+      printf("fwd\n");
+      currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
+
+      if (fwd(dist, currVelo, mission.time))
+        mission.state = ms_nextState;
+      break;
+
+    case ms_turn:
+      printf("turn\n");
+      if (targetVelo - currVelo > acc * sampletime)
+        currVelo += acc * sampletime;
+      else
+        currVelo = targetVelo;
+
+      maxVelo = sqrt(2 * acc * (wheelDist - (mot.right_pos - mot.startpos)));
+      if (maxVelo < currVelo)
+        currVelo = maxVelo;
+
+      if (turn(angle, currVelo, mission.time))
+        mission.state = ms_nextState;
+
+      break;
+
+    case ms_followlineLeft:
+      printf("followlineLeft\n");
+      currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
+
+      angleDeg = (double)getSensorAngleLeft(findSensorLeft(linesensor->data));
+
+      odoRef = odo.theta - (angleDeg * M_PI / 180);
+      deltaV = 0.6 * (odoRef - odo.theta);
+
+      if (direction(deltaV, currVelo, dist, mission.time))
+        mission.state = ms_nextState;
+
+      break;
+
+    case ms_followlineRight:
+      printf("followlineRight\n");
+      currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
+
+      angleDeg = (double)getSensorAngleRight(findSensorRight(linesensor->data));
+
+      odoRef = odo.theta - (angleDeg * M_PI / 180);
+      deltaV = 0.6 * (odoRef - odo.theta);
+      if (direction(deltaV, currVelo, dist, mission.time))
+        mission.state = ms_nextState;
+
+      break;
+
+    case ms_followlineMiddle:
+      printf("followlineMiddle\n");
+      currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
+
+      angleDeg = centerOfMass(5, linesensor->data);
+
+      odoRef = odo.theta - (angleDeg * M_PI / 180);
+      deltaV = 0.6 * (odoRef - odo.theta);
+      if (direction(deltaV, currVelo, dist, mission.time))
+        mission.state = ms_nextState;
+
+      break;
+
+    case ms_direction:
+      printf("direction\n");
+      dist = 0.4;
+      currVelo = calcVelocity(targetVelo, currVelo, acc, dist);
+
+      odoRef = angleDeg * M_PI / 180; // VARIABEL TIL VINKEL SOM SKAL DREJES MED
+
+      if (odo.theta < 0 && odoRef > 0)
+        deltaV = currVelo * (odoRef - odo.theta - (2 * M_PI));
+      else if (odo.theta > 0 && odoRef < 0)
+        deltaV = currVelo * (odoRef - odo.theta + (2 * M_PI));
+      else
+        deltaV = currVelo * (odoRef - odo.theta);
+
+      if (direction(deltaV, currVelo, dist, mission.time))
+        mission.state = ms_nextState;
+
+      break;
+
+    case ms_calcDistance:
+      printf("ms_calcDistance\n");
+      printf("irDist %f«n", measureIRDist(laserpar, irSensorMiddle));
+      printf("odoy %f\n", odo.y);
+      printf("Distance from start to box: %f\n", measureIRDist(laserpar, irSensorMiddle) + (odo.y * -1) + irOffset);
+      mission.state = ms_nextState;
+      break;
+
+    case ms_end:
+      mot.cmd = mot_stop;
+      running = 0;
+      break;
+    }
+    /*  end of mission  */
+
+    odometryLog[odometryCounter] = (double)mission.time;
+    odometryLog[odometryCounter + 1] = odo.x;
+    odometryLog[odometryCounter + 2] = odo.y;
+    odometryLog[odometryCounter + 3] = odo.theta;
+    odometryCounter += 4;
+
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
     for (int i = 0; i < 10; i++)
     {
       laserLog[i][laserCounter] = laserpar[i];
@@ -697,10 +910,17 @@ int main()
 
   odometryLogToFile(odometryLog, odometryCounter);
   laserLogToFile(laserLog, laserCounter);
+<<<<<<< HEAD
 
   rhdSync();
   rhdDisconnect();
 
+=======
+
+  rhdSync();
+  rhdDisconnect();
+
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
   exit(0);
 }
 
@@ -781,6 +1001,7 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       p->startpos = (p->left_pos + p->right_pos) / 2;
       p->curcmd = mot_move;
       break;
+<<<<<<< HEAD
 
     case mot_turn:
       if (p->angle > 0)
@@ -795,6 +1016,22 @@ void update_motcon(motiontype *p, int exitC, int32_t *sensors)
       break;
     }
 
+=======
+
+    case mot_turn:
+      if (p->angle > 0)
+        p->startpos = p->right_pos;
+      else
+        p->startpos = p->left_pos;
+      p->curcmd = mot_turn;
+      break;
+
+    case mot_direction:
+      p->curcmd = mot_direction;
+      break;
+    }
+
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
     p->cmd = 0;
   }
 
@@ -1060,7 +1297,11 @@ void laserLogToFile(double data[10][1000], int size)
   fclose(pFile);
 }
 
+<<<<<<< HEAD
 int lineSensorCaliBlack(int32_t sensor)
+=======
+int lineSensorCali(int32_t sensor)
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
 {
   if (sensor > 0)
     return 1;
@@ -1068,6 +1309,7 @@ int lineSensorCaliBlack(int32_t sensor)
   return 0;
 }
 
+<<<<<<< HEAD
 int lineSensorCaliWhite(int32_t sensor)
 {
   if (sensor < 255)
@@ -1076,6 +1318,8 @@ int lineSensorCaliWhite(int32_t sensor)
   return 0;
 }
 
+=======
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
 int findSensorRight(int32_t *sensors)
 {
   int value = 1;
@@ -1083,7 +1327,11 @@ int findSensorRight(int32_t *sensors)
   for (size_t i = 0; i <= 7; i++)
   {
     //printf("%ld:%d ",i, sensors[i]);
+<<<<<<< HEAD
     if (lineSensorCaliBlack(sensors[i]) < value)
+=======
+    if (lineSensorCali(sensors[i]) < value)
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
     {
       return i;
     }
@@ -1099,7 +1347,11 @@ int findSensorLeft(int32_t *sensors)
   for (size_t i = 7; i > 0; i--)
   {
     //printf("%ld:%d ",i, sensors[i]);
+<<<<<<< HEAD
     if (lineSensorCaliBlack(sensors[i]) < value)
+=======
+    if (lineSensorCali(sensors[i]) < value)
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
     {
       return i;
     }
@@ -1171,6 +1423,7 @@ int getSensorAngleLeft(int sensor)
   case 7:
     return -20;
     break;
+<<<<<<< HEAD
 
   default:
     break;
@@ -1214,6 +1467,35 @@ double centerOfMass(int distanceBetweenSensors, int *sensors, int blackLine)
   if (!sensorSum)
     return 0;
 
+=======
+
+  default:
+    break;
+  }
+  return -20;
+}
+
+//xi er afstand fra center af linje sensorene til den individuelle sensor
+double centerOfMass(int distanceBetweenSensors, int *sensors)
+{
+  int numberOfSensors = 8;
+  double sensorSum = 0;
+  double sensorSumTimesXi = 0;
+
+  double center = ((numberOfSensors)) / 2;
+
+  for (int i = 0; i < numberOfSensors; i++)
+  {
+    sensorSum += 1 - lineSensorCali(sensors[i]);
+  }
+
+  //calc Xi * I_i
+  for (int i = 0; i < numberOfSensors; i++)
+  {
+    sensorSumTimesXi += i * (1 - lineSensorCali(sensors[i]));
+  }
+
+>>>>>>> 7644d074aad8e482bac221ce9ad7f2427048acf8
   return (center - (sensorSumTimesXi / sensorSum)) * distanceBetweenSensors;
 }
 

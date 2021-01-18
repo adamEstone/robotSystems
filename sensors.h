@@ -26,7 +26,6 @@ int crossingBlackLine(int32_t *sensors)
   return 0;
 }
 
-
 enum
 {
   irSensorLeft = 0,
@@ -34,31 +33,24 @@ enum
   irSensorMiddle = 5
 };
 
-
-int laserTrigger(double laserpar[10], double dist, int irSensor) {
-/*
-printf("dist: %f, linesensor: %f\n",dist, laserpar[irSensor]);
-
-for (int i = 0; i < 9; i++)
+int laserTriggerLess(double laserpar[10], double dist, int irSensor)
 {
-  printf("%f, ", laserpar[i]);
+  if (laserpar[irSensor] < dist)
+    return 1;
+
+  return 0;
 }
 
-printf("\n");
+int laserTriggerLarger(double laserpar[10], double dist, int irSensor)
+{
+  if (laserpar[irSensor] > dist)
+    return 1;
 
-*/
-
-if (laserpar[irSensor] < dist){
-  return 1;
+  return 0;
 }
 
-return 0;
+double measureIRDist(double laserpar[10], int irSensor)
+{
 
-}
-
-
-double measureIRDist(double laserpar[10], int irSensor) {
-
-return laserpar[irSensor];
-
+  return laserpar[irSensor];
 }
