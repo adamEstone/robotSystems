@@ -10,3 +10,4 @@ odometry_log.txt
 run.sh
 laser_log.dat
 log_ulmsserver/.PATH.TEST
+data.debug
