@@ -446,10 +446,16 @@ int main()
 
       case 26: // drive @v1.0 :($irdistfrontmiddle > 0.2)
       case 56:
-      case 66:
         mission.state = ms_fwd;
         exitCondition = exit_irDistMiddelLess;
         dist = 0.2;
+        targetVelo = 0.3;
+        break;
+
+      case 66:
+        mission.state = ms_fwd;
+        exitCondition = exit_irDistMiddelLess;
+        dist = 0.4;
         targetVelo = 0.3;
         break;
 
